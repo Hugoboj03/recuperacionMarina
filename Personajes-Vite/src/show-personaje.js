@@ -1,83 +1,78 @@
 const SERVER = 'http://localhost:5001';
 
+import { eliminarPersonaje } from "./delete-person.js";
+
 
 let contenedor = document.getElementById("personsContainer");
 
 
 async function obtener() {
     try {
-        const resp = await fetch(`${SERVER}/personajes`);
-        if (!resp.ok) throw new Error(`Error: ${resp.status} ${resp.statusText}`);
 
-        const json = await resp.json();
-        let personajes = json.data;
+        const obten = await fetch(`${SERVER}/personajes`);
 
-        console.log(personajes);
+        if (!obten.ok) {
 
-        contenedor.innerHTML = ""; // Limpiar contenedor antes de agregar nuevos elementos
+            console.log("Fallo al obtener los personajes");
 
-        personajes.forEach(element => {
+        } else {
+
+            console.log("Se obtuvieron los personajes");
+
+        }
+
+        const json = await obten.json();
+        let person = json.data;
+
+        contenedor.innerHTML = "";
+
+        person.forEach(element => {
+
             console.log(element);
 
-            // Crear contenedor de la tarjeta
-            let carta = document.createElement("div");
-            carta.classList.add("col-md-4", "mb-4");
+            let card = document.createElement("div");
+            card.classList.add("card");
+            let nombreLabel = document.createElement("label");
+            nombreLabel.textContent = element.nombre;
+            let patronusLabel = document.createElement("label");
+            patronusLabel.textContent = element.patronus;
+            let sangreLabel = document.createElement("label");
+            sangreLabel.textContent = element.sangre;
+            let varitaLabel = document.createElement("label");
+            varitaLabel.textContent = element.varita;
+            let fechaLabel = document.createElement("label");
+            fechaLabel.textContent = element.fechaNacimiento;
+            let casaLabel = document.createElement("label");
+            casaLabel.textContent = element.casa;
+            let botonEliminar = document.createElement("button");
+            botonEliminar.textContent = "elimiar";
+            botonEliminar.setAttribute("name", element.id);
 
-            let carta2 = document.createElement("div");
-            carta2.classList.add("card");
+            botonEliminar.addEventListener("click", () => {
+                eliminarPersonaje(element.id, element.nombre)
 
-            let body = document.createElement("div");
-            body.classList.add("card-body");
+            });
 
-            let nombre = document.createElement("h5");
-            nombre.classList.add("card-title");
-            nombre.innerText = element.nombre;
 
-            // Crear texto descriptivo
-            let text = document.createElement("p");
-            text.classList.add("card-text");
+            card.appendChild(nombreLabel);
+            card.appendChild(patronusLabel);
+            card.appendChild(sangreLabel);
+            card.appendChild(varitaLabel);
+            card.appendChild(fechaLabel);
+            card.appendChild(casaLabel);
+            card.appendChild(botonEliminar);
+            contenedor.appendChild(card);
 
-            let p = document.createElement("p");
-            p.innerText = `${element.casa} - ${element.patronus} - ${element.fechaNacimiento} - ${element.sangre} - ${element.varita}`;
-
-            // Crear etiqueta de la casa (badge)
-            let badge = document.createElement("span");
-            badge.classList.add("badge");
-            badge.innerText = element.casa;
-
-            // Asignar color según la casa de Hogwarts
-            switch (element.casa) {
-                case "Gryffindor":
-                    badge.classList.add("badge-gryffindor");
-                    break;
-                case "Slytherin":
-                    badge.classList.add("badge-slytherin");
-                    break;
-                case "Hufflepuff":
-                    badge.classList.add("badge-hufflepuff");
-                    break;
-                case "Ravenclaw":
-                    badge.classList.add("badge-ravenclaw");
-                    break;
-                default:
-                    badge.classList.add("badge-secondary");
-            }
-
-            // Armar la estructura
-            text.appendChild(p);
-            body.appendChild(nombre);
-            body.appendChild(badge);
-            body.appendChild(text);
-            carta2.appendChild(body);
-            carta.appendChild(carta2);
-
-            // Agregar al contenedor
-            contenedor.appendChild(carta);
         });
 
-    } catch (error) {
-        console.error("Fallo al obtener personajes:", error);
+    } catch (e) {
+
+        console.log(e);
+
+
+
     }
+
 }
 
 obtener();

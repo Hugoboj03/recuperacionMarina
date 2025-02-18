@@ -18,7 +18,7 @@ formulario.addEventListener('submit', async (e) => {
         nombre,
         casa,
         patronus,
-        fechaNacimiento: fecha,
+        fecha,
         sangre,
         varita
     };
@@ -27,13 +27,13 @@ formulario.addEventListener('submit', async (e) => {
         const respuesta = await fetch(`${SERVER}/personajes`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",  // <- Corrección aquí
+                "Content-Type": "application/json",  
             },
-            body: JSON.stringify(nuevoPersonaje)  // <- Ahora es un objeto normal
+            body: JSON.stringify(nuevoPersonaje)
         });
 
         if (respuesta.ok) {
-            localStorage.setItem(nuevoPersonaje.nombre, nuevoPersonaje.casa);
+            localStorage.setItem(nuevoPersonaje[0], nuevoPersonaje[1]);
             location.assign("index.html");
         } else {
             console.error("Error al enviar el personaje:", await respuesta.text());
